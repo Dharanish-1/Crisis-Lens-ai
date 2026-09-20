@@ -1,0 +1,27 @@
+import { NextResponse } from "next/server";
+import { GoogleGenAI } from "@google/genai";
+
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+
+export async function POST(req: Request) {
+  try {
+    const { imageBase64, prompt } = await req.json();
+
+    const response = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: [
+        {
+          inlineData: {
+            mimeType: "image/jpeg",
+            data: imageBase64,
+          },
+        },
+        { text: prompt || "Analyze this disaster image. Provide a hazard severity score (1-10), key threats, and immediate action steps." },
+      ],
+    });
+
+    return NextResponse.json({ result: response.text });
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
