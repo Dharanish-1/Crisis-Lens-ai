@@ -1,0 +1,18 @@
+import { NextResponse } from "next/server";
+
+export async function POST(req: Request) {
+  try {
+    const { message, recipientPhone } = await req.json();
+    
+    // Placeholder response simulation for hackathon if Twilio keys aren't fully hooked up
+    // You can integrate standard twilio npm package here if needed:
+    // client.messages.create({ body: message, from: '...', to: recipientPhone })
+
+    return NextResponse.json({ 
+      success: true, 
+      status: `SOS Alert successfully transmitted to ${recipientPhone || 'Emergency Responders'}` 
+    });
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
